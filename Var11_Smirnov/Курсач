@@ -1,0 +1,162 @@
+#include "stdafx.h"
+#include <iostream>
+#include <stdlib.h>
+#include <fstream>
+#include <string>
+#include <iomanip>
+#include <vector>
+using namespace std;
+
+class Company
+{
+	public:
+		void store(string name, int staff, double area, int number);
+		void show();
+
+	private:
+		string name;
+		int staff;
+		double area;
+		int number;
+};
+
+void Company::store(string itsName, int itsStaff, double itsArea,int itsNumber)
+{
+	name=itsName;
+	staff=itsStaff;
+	area=itsArea;
+	number=itsNumber;
+}
+
+void Company::show()
+{
+	cout<<"|"<<setw(5)<<number<<"|"<<setw(24)<<name<<" |"<<setw(14)<<staff<<" |"<<setw(25)<<area<<" |"<<endl; // setw() - устанавливаем ширину строки для нужного форматирования
+	for(int i=0; i<76; i++)  cout<<"=";
+	cout<<endl;
+}
+
+void enterElement(vector<Company> companyVector);
+void sortTable();
+void showTable(vector<Company> companyVector);
+void eraseElement();
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	setlocale(LC_ALL, "rus");
+
+	vector<Company> companyVector;
+	int choice;
+	do
+	{
+		system("cls");
+		cout<<"Выберите пункт меню:"<<endl<<"1. Ввод новых элементов таблицы"<<endl<<"2. Отсортировать данные таблицы"<<endl;
+		cout<<"3. Вывести таблицу на экран"<<endl<<"4. Удаление элементов таблицы"<<endl<<"5. Завершить работу программы"<<endl<<"Ваш выбор: ";
+		cin>>choice;
+		switch(choice)
+		{
+		case 1:	
+			enterElement(companyVector);
+			break;
+		case 2:	
+			sortTable();
+			break;
+		case 3:	
+			showTable(companyVector);
+			break;
+		case 4:
+			eraseElement();
+			break; 
+		case 5:	
+			cout<<"Вы покидаете матрицу и отправляетесь в реальную жизнь. Счастливого пути!"<<endl;
+			break;
+		default: 
+				cout<<"Вы ввели неизвестную команду. Пожалуйста, перечитайте пункты меню"<<endl;
+		}
+	}
+	while(choice!=5);
+	system("PAUSE");
+	return 0;
+}
+
+void enterElement(vector<Company> companyVector)
+{
+	ofstream newData("Таблица.csv",ios_base::app);
+	string newLine;
+	string newName;
+	string newStaff;
+	string newArea;
+
+	cout<<"Введите имя компании: ";
+	cin>>newName;
+	cout<<"Введите количество сотрудников: ";
+	cin>>newStaff;
+	cout<<"Введите площадь: ";
+	cin>>newArea;
+
+	newLine.append("\n");
+	newLine.append(newName);
+	newLine.append(";");
+	newLine.append(newStaff);
+	newLine.append(";");
+	newLine.append(newArea);
+	newLine.append(";");
+	newData<<newLine;
+
+	newData.close();
+}
+
+void sortTable()
+{
+
+}
+
+void showTable(vector<Company> companyVector)
+{
+	Company Array;
+	int occupancy=1;
+	string line;
+	ifstream fileData("Таблица.csv"); // создаем объект для вывода файлов из "Таблицы"
+
+	string thisName;
+	string buff;
+	int itsStaff;
+	double itsArea;
+
+	cout<<"|"<<setw(4)<<"Номер"<<"|"<<setw(24)<<"Название организации"<<" |"<<setw(14)<<"Сотрудники"<<" |"<<setw(25)<<"Площадь"<<" |"<<endl;	//выводим заголовок форматирования
+	for(int i=0; i<76; i++)  cout<<"=";
+	cout<<endl;
+
+	while (! fileData.eof())
+	{ 
+		getline(fileData, line); //выдираем первую строку из файла
+		char endchr= ';'; // символ окончания поиска
+
+		size_t pos = line.find(endchr, 0); // позиция на которой находится символ окончания поиска
+		thisName.resize(pos); //пересоздаем объект нужного размера
+		copy( line.begin(), line.begin()+pos, thisName.begin() ); // копируем
+		line.erase(0, (pos+1)); // удаляем все скопированное + знак ";"
+
+		pos = line.find(endchr, 0);
+		buff.resize(pos);
+		copy( line.begin(), line.begin()+pos, buff.begin() );
+		itsStaff=atoi(buff.c_str() ); // преобразование string в int
+		line.erase(0, (pos+1));
+
+		pos = line.find(endchr, 0);
+		buff.resize(pos);
+		copy( line.begin(), line.begin()+pos, buff.begin() );
+		itsArea=atof(buff.c_str() ); // преобразование string в float
+		
+		Array.store(thisName, itsStaff, itsArea, occupancy);
+		companyVector.push_back(Array);
+		Array.show();
+		occupancy++;
+	}
+	cout<<"В таблице находится "<<(occupancy-1)<<" записей!"<<endl;
+	system("PAUSE");
+}
+
+void eraseElement()
+{
+
+}
