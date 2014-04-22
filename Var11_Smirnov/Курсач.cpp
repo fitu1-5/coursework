@@ -1,4 +1,4 @@
-//Не забываем включить шрифт ЛюсидаКонсоль в свойствах приложения!
+ //Не забываем включить шрифт ЛюсидаКонсоль в свойствах приложения!
 //Вы же любите русский шрифт?
 #include "stdafx.h"
 #include <iostream>
@@ -110,7 +110,7 @@ void enterElement()
 	string newName;
 	string newStaff;
 	string newArea;
-
+	
 	cout<<"Введите имя компании: ";
 	cin>>newName;
 	cout<<"Введите количество сотрудников: ";
@@ -279,9 +279,13 @@ void showTable()
 void eraseElement()
 {
 	int delLine;
-	cout<<"Введите номер удаляемой строки: ";
-	cin>>delLine;
 	int size=companyVector.size();
+	do
+	{
+		cout<<"Введите номер удаляемой строки: ";
+		cin>>delLine;
+	}
+	while(delLine<0 || delLine>size);
 	companyVector.erase(companyVector.begin() + (delLine-1));
 	writeTable();
 	system("PAUSE");
